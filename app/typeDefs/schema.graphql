@@ -1,0 +1,60 @@
+scalar DateTime
+type User {
+    login:ID!
+    name:String!
+    avatar_url:String
+    # postedPhotos:[Photo!]!
+    # inPhotos:[Photo!]!
+}
+
+type Photo {
+    id: ID!
+    name: String!
+    url: String!
+    description: String
+    category: PhotoCategory!
+    postedBy: User!
+    taggedUsers: [User!]!
+    created: DateTime!
+}
+
+enum PhotoCategory{
+    SELFIE
+    PORTRAIT
+    ACTION
+    LANDSCAPE
+    GRAPHIC
+}
+
+input PostPhotoInput{
+    name:String!
+    description:String
+}
+
+type AuthPayload {
+    token: String!
+    user: User!
+}
+
+type Query {
+    me:User,
+    totalPhotos:Int!
+    allPhotos:[Photo!]!
+    photo(
+        id:ID!
+    ):Photo
+    totalUsers:Int!
+    allUser:[User!]!
+    User(login:ID!):User
+}
+
+type Mutation{
+    postPhoto(input:PostPhotoInput!):Photo
+    tagPhoto(
+        githubLogin:ID,
+        photoID: ID!
+    ):Photo!
+    githubAuth(
+        code:String!
+    ):AuthPayload!
+}
