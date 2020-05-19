@@ -5,9 +5,10 @@ const { ApolloServer } = require('apollo-server-express');
 const { readFileSync } = require('fs')
 const db = require('./app/database')
 const resolvers = require('./app/resolvers/index')
-const typeDefs = readFileSync('./app/typeDefs/schema.graphql', 'UTF-8')
 const expressPlayground = require('graphql-playground-middleware-express').default
 const context = require('./app/utils/context')
+const typeDefs = readFileSync('./app/typeDefs/schema.graphql', 'UTF-8')
+
 var app = express()
 db.connectDB()
     .then(() => {
