@@ -61,6 +61,18 @@ const TokenMgmt = (userId, newToken) => {
     })
 }
 
+const taggedUsers=(login_list)=>{
+    console.log(login_list)
+    return User.find({login:{$in:login_list}},"_id").exec()
+    .then(user=>{
+        list_of_ids = user.map(e=>e._id)
+        console.log(list_of_ids)
+        return user.length>0?user:new Error(" no user found")
+    })
+    .catch(err=>new Error(err))
+}
+
 module.exports = {
-    UserAuth
+    UserAuth,
+    taggedUsers
 }

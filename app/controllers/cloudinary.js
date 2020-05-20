@@ -1,25 +1,10 @@
 const cloudinary = require('cloudinary').v2
 const { CLOUD_NAME, CLOUDINARY_API_SECRET, CLOUDINARY_API_KEY } = process.env
-console.log(CLOUDINARY_API_SECRET, CLOUDINARY_API_KEY, CLOUD_NAME)
 cloudinary.config({
     cloud_name: CLOUD_NAME,
     api_key: CLOUDINARY_API_KEY,
     api_secret: CLOUDINARY_API_SECRET
 })
-
-const uploadImage = (filename, stream) => {
-    return new Promise((resolve, reject) => {
-        cloudinary.uploader.upload(stream)
-            .then(responce => {
-                console.log("res", responce)
-                resolve(responce)
-            })
-            .catch(err => {
-                console.error("err", err)
-                reject(err)
-            })
-    })
-}
 
 const uploadStream = (stream) => {
     console.log("uploading stream")
@@ -36,6 +21,5 @@ const uploadStream = (stream) => {
 }
 
 module.exports = {
-    uploadImage,
     uploadStream
 }

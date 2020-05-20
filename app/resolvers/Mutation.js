@@ -30,17 +30,12 @@ const githubAuth = async (parent, { code }) => {
     return responce;
 }
 
-const postPhoto = async (_,args, {currentUser}) => {
+const postPhoto = async (_, args, { currentUser }) => {
     if (currentUser) {
-        const { createReadStream, filename, mimetype } = await args.file
-        return Photo.PostPhoto({ createReadStream, filename, mimetype },{...args,postedBy:currentUser._id})
-        .then(upload=>{
-            console.log("mutation",upload)
-            return upload
-        })
-        .catch(err=>{
-            return new Error(err)
-        })
+        const { createReadStream, filename, mimetype } = await args.input.file
+        return Photo.PostPhoto({ createReadStream, filename, mimetype }, { ...args.input, postedBy: currentUser._id })
+            .then(upload => upload)
+            .catch(err => new Error(err))
     }
     else {
         return new Error("User not Logged in")
