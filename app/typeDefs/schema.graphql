@@ -2,9 +2,9 @@ scalar DateTime
 
 type User {
     login:ID!
-    name:String!
+    name:String
     avatar_url:String
-    # postedPhotos:[Photo!]!
+    postedPhotos:[Photo!]!
     # inPhotos:[Photo!]!
 }
 
@@ -28,10 +28,10 @@ enum PhotoCategory{
 }
 
 input PostPhotoInput{
-    name:String!
+    name:String
     description:String
     category:PhotoCategory
-    taggedUsers:[String!]!
+    taggedUsers:[String!]
     file:Upload!
 }
 
@@ -51,7 +51,7 @@ type Query {
 }
 
 type Mutation{
-    postPhoto(file:Upload!):Photo!
+    postPhoto(input:PostPhotoInput):Photo!
     tagPhoto(githubLogin:ID,photoID: ID!):Photo!
     githubAuth(code:String!):AuthPayload!
 }

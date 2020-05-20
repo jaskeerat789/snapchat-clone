@@ -1,28 +1,29 @@
 const mongoose = require('mongoose');
 const Photos = require('../models/photo');
 const cloudinary = require('./cloudinary');
+const user = require('./user');
 
-const PostPhoto = async ({ createReadStream, mimetype, filename }, { description, category, postedBy, taggedUsers }) => {
-    return new Promise((resolve, reject) => {
+const PostPhoto = async ({ createReadStream, mimetype, filename }, { description, category, postedBy, taggedUsers, name }) => {
+    return new Promise(async (resolve, reject) => {
         if (mimetype.startsWith("image")) {
+            const tagged_users= await user.taggedUsers(taggedUsers)
             const stream = createReadStream()
             const _id = new mongoose.Types.ObjectId()
             cloudinary.uploadStream(stream)
                 .then(res => {
                     console.log("saving Photo")
-                    console.log(postedBy)
                     const photo = new Photos({
                         _id,
-                        name: filename,
+                        name: name || filename,
                         url: res.url,
                         description,
                         postedBy,
-                        taggedUsers,
+                        taggedUsers:tagged_users,
                         category,
                     });
                     photo.save()
                         .then(saved => {
-                            // console.log(saved);
+                            console.log(saved)
                             return resolve (saved);
                         })
                         .catch(err => {
@@ -38,7 +39,8 @@ const PostPhoto = async ({ createReadStream, mimetype, filename }, { description
 
 }
 
-
+const allPhotos =()=>Photos.find().populate('postedBy').populate('taggedUsers').exec().then(photos=>photos).catch(err=>new Error(err))
 module.exports = {
     PostPhoto,
+    allPhotos,
 }
