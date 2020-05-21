@@ -5,7 +5,7 @@ type User {
     name:String
     avatar_url:String
     postedPhotos:[Photo!]!
-    # inPhotos:[Photo!]!
+    inPhotos:[Photo!]
 }
 
 type Photo {
