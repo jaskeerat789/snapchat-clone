@@ -14,5 +14,12 @@ module.exports = {
         postedBy: ({ postedBy }) =>postedBy,
         taggedUsers: ({taggedUsers}) =>taggedUsers,
         created: parent => parent.createdAt
+    },
+    User:{
+        inPhotos:async parent=>{
+            return Photos.find({taggedUsers:parent._id}).exec()
+            .then(photos=>photos)
+            .catch(err=>new Error(err))
+        }
     }
 }

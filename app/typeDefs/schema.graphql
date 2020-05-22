@@ -5,7 +5,7 @@ type User {
     name:String
     avatar_url:String
     postedPhotos:[Photo!]!
-    # inPhotos:[Photo!]!
+    inPhotos:[Photo!]
 }
 
 type Photo {
@@ -54,4 +54,9 @@ type Mutation{
     postPhoto(input:PostPhotoInput):Photo!
     tagPhoto(githubLogin:ID,photoID: ID!):Photo!
     githubAuth(code:String!):AuthPayload!
+}
+
+type Subscription{
+    newPhoto:Photo!
+    newLogin:AuthPayload!
 }

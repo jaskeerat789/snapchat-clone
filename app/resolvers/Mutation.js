@@ -2,7 +2,7 @@ const GitHub = require('../utils/github');
 const User = require('../controllers/user');
 const Photo = require('../controllers/photo');
 
-const githubAuth = async (parent, { code }) => {
+const githubAuth = async (parent, { code }, { pubsub }) => {
     let {
         message,
         access_token,
@@ -27,14 +27,18 @@ const githubAuth = async (parent, { code }) => {
             }
         })
         .catch(err => err)
+    pubsub.publish('new_user', { newLogin: responce })
     return responce;
 }
 
-const postPhoto = async (_, args, { currentUser }) => {
+const postPhoto = async (_, args, { currentUser, pubsub }) => {
     if (currentUser) {
         const { createReadStream, filename, mimetype } = await args.input.file
         return Photo.PostPhoto({ createReadStream, filename, mimetype }, { ...args.input, postedBy: currentUser._id })
-            .then(upload => upload)
+            .then(upload => {
+                pubsub.publish('photo-added', { upload })
+                return upload
+            })
             .catch(err => new Error(err))
     }
     else {

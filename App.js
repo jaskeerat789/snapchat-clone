@@ -1,6 +1,6 @@
 require('dotenv').config()
 const express = require('express');
-const mongoose = require('mongoose');
+const { createServer } = require('http')
 const { ApolloServer } = require('apollo-server-express');
 const { readFileSync } = require('fs')
 const db = require('./app/database')
@@ -10,6 +10,8 @@ const context = require('./app/utils/context')
 const typeDefs = readFileSync('./app/typeDefs/schema.graphql', 'UTF-8')
 
 var app = express()
+var httpServer = createServer(app)
+
 db.connectDB()
     .then(() => {
         const server = new ApolloServer({ typeDefs, resolvers, context })
@@ -20,6 +22,8 @@ db.connectDB()
             res.send("Welcome To Photo Share GraphQL API")
         })
         app.get('/playground', expressPlayground({ endpoint: '/graphql' }))
-
-        app.listen({ port: process.env.PORT }, (args) => { console.log(`http://localhost:${process.env.PORT}`)})
+        server.installSubscriptionHandlers(httpServer)
+        httpServer.timeout = 5000,
+            httpServer.listen({ port: process.env.PORT }, (args) => { console.log(`http://localhost:${process.env.PORT}`) })
+        // app.listen({ port: process.env.PORT }, (args) => { console.log(`http://localhost:${process.env.PORT}`) })
     })
