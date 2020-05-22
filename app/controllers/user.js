@@ -42,7 +42,7 @@ const TokenMgmt = (userId, newToken) => {
                     reject(err)
                 if (existingToken)
 
-                    Token.updateOne({_id:existingToken._id }, { $set: { token: newToken } }, (error, updates) => {
+                    Token.updateOne({ _id: existingToken._id }, { $set: { token: newToken } }, (error, updates) => {
                         if (error)
                             reject(error)
                         if (updates)
@@ -50,7 +50,7 @@ const TokenMgmt = (userId, newToken) => {
                     })
 
                 else {
-                    const createToken = new Token({ _id: new ObjectId(), token:newToken, user: userId })
+                    const createToken = new Token({ _id: new ObjectId(), token: newToken, user: userId })
                     createToken.save()
                         .then(update => {
                             resolve(update)
@@ -61,15 +61,20 @@ const TokenMgmt = (userId, newToken) => {
     })
 }
 
-const taggedUsers=(login_list)=>{
+const taggedUsers = (login_list) => {
     console.log(login_list)
-    return User.find({login:{$in:login_list}},"_id").exec()
-    .then(user=>{
-        list_of_ids = user.map(e=>e._id)
-        console.log(list_of_ids)
-        return user.length>0?user:new Error(" no user found")
-    })
-    .catch(err=>new Error(err))
+    if (login_list.length > 0) {
+        return User.find({ login: { $in: login_list } }, "_id").exec()
+            .then(user => {
+                list_of_ids = user.map(e => e._id)
+                console.log(list_of_ids)
+                return user.length > 0 ? user : new Error(" no user found")
+            })
+            .catch(err => new Error(err))
+    }
+    else{
+        return null
+    }
 }
 
 module.exports = {

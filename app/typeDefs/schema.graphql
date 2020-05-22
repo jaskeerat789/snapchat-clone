@@ -55,3 +55,8 @@ type Mutation{
     tagPhoto(githubLogin:ID,photoID: ID!):Photo!
     githubAuth(code:String!):AuthPayload!
 }
+
+type Subscription{
+    newPhoto:Photo!
+    newLogin:AuthPayload!
+}
